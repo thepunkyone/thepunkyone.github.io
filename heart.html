@@ -1,0 +1,244 @@
+<html>
+	<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href='https://fonts.googleapis.com/css?family=Courgette&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+	</head>
+	<body>
+        <div id="container">
+            <div class="sveiciens">
+                <p>
+                Mīļi sveicieni Māmiņdienā!
+                </p>
+                <p>
+                Lai ir sirdī krāsains prieks!
+                </p>
+            </div>
+        </div>
+<!--
+		<svg id="container" viewbox="0 0 2000 800">
+		 <defs>
+		  <style type="text/css">
+			body {width:100%;}
+			#container {position: relative; top: 50%; transform: translateY(-50%); display:block; margin:0 auto; margin-top:200px;}
+			.str0 {stroke:#960000;stroke-width:2.66684}
+			.fil0 {fill:red;fill-rule:nonzero}
+		  </style>
+		 </defs>
+		 <g id="Heart">
+		  <path class="fil0 str0" d="M200 200c12,-22 25,-34 50,-34 28,0 50,20 50,45 0,46 -50,91 -100,136 -51,-45 -101,-90 -101,-136 0,-25 22,-45 50,-45 25,0 38,12 51,34z"/>
+		 </g>
+		</svg>
+-->
+
+        <style type="text/css">
+            body {
+                box-sizing:border-box;
+                margin: 0;
+                padding:30px;
+            }
+
+            #container {
+                 display: inline-block;
+                position: relative;
+                width: 100%;
+                padding-bottom: 100%;
+                vertical-align: middle;
+                overflow: hidden;
+                margin: 0 auto;
+            }
+
+            .sveiciens {
+                position:absolute;
+                top:200px;
+                left:250px;
+            }
+
+            p {
+                font-family: 'Courgette', cursive;
+                font-size:46px;
+                padding-left:80px;
+                padding-bottom:0;
+                padding-top:0;
+                margin-bottom:0;
+                margin-top:0;
+                white-space: nowrap;
+                overflow: hidden;
+                width: 30em;
+                animation: type 4s steps(60, end);
+            }
+
+            p:nth-child(2){
+                animation: type2 4s steps(60, end);
+                margin-bottom:30px;
+                margin-top:10px;
+            }
+
+            @keyframes type{
+              from { width: 0%; }
+            }
+
+            @keyframes type2{
+              0%{width: 0%; }
+                50%{width: 0%; }
+              100%{width: 100%; }
+            }
+
+            svg {
+                margin:0 auto;
+                text-align:center;
+                display:inline-flex;
+            }
+
+
+        </style>
+
+		<script src="bower_components/d3/d3.min.js">
+		</script>
+
+		<script>
+
+            function createHeart() {
+
+                var outerDiv = d3.select("div#container")
+                                .append("div")
+                                .style("width", 300)
+                                .style("height", 300)
+                                .style("position", "absolute")
+                                .style("border", "2px solid blue")
+                                .style("text-align", "center")
+                                .style("display", "flex")
+                                .style("align-items", "center");
+
+                var innerDiv = outerDiv.append("div")
+                                .style("border", "1px solid yellow")
+                                .style("margin", "auto auto");
+
+                var svg = innerDiv.append("svg")
+                                .attr("preserveAspectRatio", "xMinYMin meet")
+                                .attr("viewBox", "0 0 205 205")
+                                .attr("width", 205)
+                                .attr("height", 185)
+                                .classed("svg-content", true)
+                                .style("margin", "0 auto");
+
+                var path = svg.append("path")
+                                .attr("d", "M103 36c12,-22 25,-34 50,-34 28,0 50,20 50,45 0,46 -50,91 -100,136 -51,-45 -101,-90 -101,-136 0,-25 22,-45 50,-45 25,0 38,12 51,34z")
+                                .attr("stroke", "blue")
+                                .attr("stroke-width", 2)
+                                .attr("fill", "none");
+
+                return {
+                    svg: svg,
+                    path: path,
+                    setPos: function(y, x) {
+                        outerDiv
+                            .style("top", y - 150)
+                            .style("left", x - 150);
+                    }
+                }
+            }
+
+		window.onload = function() {
+
+
+            function size(scale) {
+                return [205 * scale, 185 * scale];
+            }
+
+            var heartcount = 2;
+            var hearts = [];
+            var heartPalette = ["red", "purple", "yellow", "green", "blue"];
+            var scalePalette = [size(1), size(0.5), size(0.2), size(0.8)];
+
+
+                while(hearts.length < heartcount) {
+                    hearts.push(createHeart())
+                 }
+
+
+            hearts[0].setPos(200, 250);
+            hearts[1].setPos(100, 400);
+
+            var index = 0;
+
+                while(index < hearts.length) {
+
+                    var heart = hearts[index]
+
+                    var r = Math.floor(Math.random() * 67)
+
+                    cycleColors(heart.path, heartPalette, r)
+                    cycleScales(heart.svg, scalePalette, r)
+
+                    index = index + 1
+                }
+
+
+
+				function cycleColors(elem, palette, offset)
+                {
+                    var colors = []
+
+                    for(var i = 0; i < palette.length; i++) {
+                        colors.push(palette[(i + offset) % palette.length]);
+                    }
+
+                    var transitions = colors
+                                        .map(function(color) {
+                                            return function(p) {
+                                                return p.transition()
+                                                        .duration(1000)
+                                                        .ease("linear")
+                                                        .style("fill", color)
+                                            }
+                                        });
+
+                    transitions
+                        .forEach(function(t) {
+                            elem = t(elem)
+                        });
+
+                    elem.each("end", function() { cycleColors(elem, palette, offset) });
+				}
+
+
+            function cycleScales(elem, palette, offset)
+                {
+                    var scales = []
+
+                    for(var i = 0; i < palette.length; i++) {
+                        scales.push(palette[(i + offset) % palette.length]);
+                    }
+
+                    var transitions = scales
+                                        .map(function(scale) {
+                                            return function(p) {
+                                                return p.transition()
+                                                        .duration(4000)
+                                                        .ease("linear")
+                                                        .attr("width", scale[0])
+                                                        .attr("height", scale[1])
+                                            }
+                                        });
+
+                    transitions
+                        .forEach(function(t) {
+                            elem = t(elem)
+                        });
+
+                    elem.each("end", function() { cycleScales(elem, palette, offset) });
+				}
+
+
+
+
+//				//		.attr("transform", "scale(" + 1 + ")")
+
+
+		}
+
+
+
+		</script>
+	</body>
+</html>
