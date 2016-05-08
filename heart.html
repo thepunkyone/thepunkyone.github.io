@@ -2,8 +2,14 @@
 	<head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link href='https://fonts.googleapis.com/css?family=Courgette&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	</head>
 	<body>
+
+        <button id="createHeartButton">Create heart</button>
+        <button id="getPositionsButton">Get positions</button>
+
         <div id="container">
             <div class="sveiciens">
                 <p>
@@ -49,12 +55,13 @@
 
             .sveiciens {
                 position:absolute;
-                top:200px;
+                top:300px;
                 left:250px;
             }
 
             p {
                 font-family: 'Courgette', cursive;
+                color:purple;
                 font-size:46px;
                 padding-left:80px;
                 padding-bottom:0;
@@ -89,6 +96,10 @@
                 display:inline-flex;
             }
 
+            button {
+                display:none;
+            }
+
 
         </style>
 
@@ -104,13 +115,15 @@
                                 .style("width", 300)
                                 .style("height", 300)
                                 .style("position", "absolute")
-                                .style("border", "2px solid blue")
+//                                .style("border", "2px solid blue")
                                 .style("text-align", "center")
                                 .style("display", "flex")
                                 .style("align-items", "center");
 
+//                $(outerDiv).draggable();
+
                 var innerDiv = outerDiv.append("div")
-                                .style("border", "1px solid yellow")
+//                                .style("border", "1px solid yellow")
                                 .style("margin", "auto auto");
 
                 var svg = innerDiv.append("svg")
@@ -127,9 +140,16 @@
                                 .attr("stroke-width", 2)
                                 .attr("fill", "none");
 
+
                 return {
                     svg: svg,
                     path: path,
+                    getPos: function() {
+                      return [
+                          parseInt(outerDiv.style("top"), 10) + 150,
+                          parseInt(outerDiv.style("left"), 10) + 150
+                      ];
+                    },
                     setPos: function(y, x) {
                         outerDiv
                             .style("top", y - 150)
@@ -140,24 +160,78 @@
 
 		window.onload = function() {
 
+            $("#createHeartButton").click(function() {
+                var heart = createHeart();
+                hearts.push(heart);
+
+                var r = Math.floor(Math.random() * 67);
+
+                cycleColors(heart.path, heartPalette, r);
+                cycleScales(heart.svg, scalePalette, r);
+            });
+
+            $("#getPositionsButton").click(function() {
+
+                var report = "";
+
+                hearts.forEach(function(h, i) {
+                    report = report + "\r\nhearts[" + i + "].setPos(" + h.getPos() + ")";
+                });
+
+                console.log(report);
+
+                window.alert(report);
+            });
+
+
+
+
+
 
             function size(scale) {
                 return [205 * scale, 185 * scale];
             }
 
-            var heartcount = 2;
+            var heartcount = 30;
             var hearts = [];
             var heartPalette = ["red", "purple", "yellow", "green", "blue"];
-            var scalePalette = [size(1), size(0.5), size(0.2), size(0.8)];
+            var scalePalette = [size(1), size(0.6), size(0.4), size(0.8)];
 
 
                 while(hearts.length < heartcount) {
                     hearts.push(createHeart())
                  }
 
-
-            hearts[0].setPos(200, 250);
-            hearts[1].setPos(100, 400);
+                hearts[0].setPos(381,205)
+                hearts[1].setPos(309,180)
+                hearts[2].setPos(145,250)
+                hearts[3].setPos(167,543)
+                hearts[4].setPos(238,167)
+                hearts[5].setPos(102,336)
+                hearts[6].setPos(214,616)
+                hearts[7].setPos(120,427)
+                hearts[8].setPos(159,702)
+                hearts[9].setPos(120,771)
+                hearts[10].setPos(101,920)
+                hearts[11].setPos(141,982)
+                hearts[12].setPos(249,1023)
+                hearts[13].setPos(327,1023)
+                hearts[14].setPos(400,995)
+                hearts[15].setPos(457,250)
+                hearts[16].setPos(514,296)
+                hearts[17].setPos(578,387)
+                hearts[18].setPos(627,439)
+                hearts[19].setPos(656,527)
+                hearts[20].setPos(667,717)
+                hearts[21].setPos(488,935)
+                hearts[22].setPos(578,848)
+                hearts[23].setPos(625,788)
+                hearts[24].setPos(736,630)
+                hearts[25].setPos(204,192)
+                hearts[26].setPos(112,273)
+                hearts[27].setPos(142,471)
+                hearts[28].setPos(92,833)
+                hearts[29].setPos(186,1017)
 
             var index = 0;
 
