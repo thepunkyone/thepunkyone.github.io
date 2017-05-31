@@ -15,7 +15,18 @@
 
                 .fnt0 {
                     opacity:0;
-                    animation: text-opacity 1s linear forwards;
+                    animation: text-opacity 1s linear forwards, glow 0.5s 10s infinite alternate;
+                }
+
+                @keyframes glow {
+                    from {
+                        opacity:1;
+                    }
+
+                    to {
+                        opacity: 0.8;
+                    }
+
                 }
 
                 @keyframes text-opacity {
@@ -171,7 +182,7 @@
                   stroke-dasharray: 30000;
                     stroke-dashoffset: 30000;
                     stroke-linecap: round;
-                  animation: dash 5s linear;
+                  animation: dash 5s linear, glow 0.5s 10s infinite alternate;
                     animation-fill-mode: forwards;
                 }
 
